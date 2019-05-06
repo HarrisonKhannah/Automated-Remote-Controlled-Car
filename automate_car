@@ -1,0 +1,81 @@
+int motorPin = 9;
+int motorPin2 = 6;
+const int trigPin = 5;
+const int echoPin = 3;
+const int speed = 255;
+long duration, cm, inches;
+
+
+int move;
+
+void setup() {
+  Serial.begin (9600);
+  pinMode(motorPin, OUTPUT);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+}
+
+void loop() {
+  Sensor();
+  MoveForward();
+
+}
+
+
+void Sensor() {
+
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(5);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+
+  pinMode(echoPin, INPUT);
+  duration = pulseIn(echoPin, HIGH);
+
+  // Convert the time into a distance
+  cm = (duration / 2) / 29.1;   // Divide by 29.1 or multiply by 0.0343
+
+  Serial.print(cm);
+  Serial.print("cm");
+  Serial.println();
+
+  delay(50);
+
+}
+
+void MoveForward() {
+  analogWrite(motorPin, speed);
+  analogWrite(motorPin2, speed);
+
+  if (cm < 50) {
+    Movement();
+  }
+   
+  if (cm > 50) {
+    move = !move;
+  }
+}
+
+
+void Movement() {
+
+  if (move) {
+    analogWrite(motorPin, speed);
+    analogWrite(motorPin2, LOW);
+    Serial.print("I AM MOVING LEFT");
+  }
+
+  if (!move) {
+    analogWrite(motorPin, LOW);
+    analogWrite(motorPin2, speed);
+    Serial.print("I AM MOVING RIGHT");
+
+  }
+
+
+
+
+}
